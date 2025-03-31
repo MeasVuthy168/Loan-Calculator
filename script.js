@@ -1,21 +1,46 @@
 function calculateLoan() {
-    let amount = document.getElementById("amount").value;
-    let rate = document.getElementById("rate").value;
-    let term = document.getElementById("term").value;
+    let loanAmount = parseFloat(document.getElementById("loanAmount").value);
+    let periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
+    let term = parseFloat(document.getElementById("term").value);
+    let interestRate = parseFloat(document.getElementById("interestRate").value);
+    let repaymentPeriod = document.getElementById("repaymentPeriod").value;
+    let paymentMethod = document.getElementById("paymentMethod").value;
 
-    if (amount <= 0 || rate <= 0 || term <= 0) {
-        alert("Please enter valid values!");
-        return;
+    let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
+    let monthlyRate = (interestRate / 100) / periodsPerYear;
+    
+    // If loan amount is missing, calculate it
+    if (isNaN(loanAmount)) {
+        if (isNaN(periodicRepayment) || isNaN(term)) {
+            alert("Please provide enough information to calculate the loan amount.");
+            return;
+        }
+        loanAmount = (periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term))) / monthlyRate;
+        document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
     }
 
-    let monthlyRate = (rate / 100) / 12;
-    let numberOfPayments = term * 12;
+    // If periodic repayment is missing, calculate it
+    if (isNaN(periodicRepayment)) {
+        if (isNaN(loanAmount) || isNaN(term)) {
+            alert("Please provide enough information to calculate periodic repayments.");
+            return;
+        }
+        periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
+        document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
+    }
 
-    let monthlyPayment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -numberOfPayments));
-    let totalPayment = monthlyPayment * numberOfPayments;
-    let totalInterest = totalPayment - amount;
+    // If term is missing, calculate it
+    if (isNaN(term)) {
+        if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
+            alert("Please provide enough information to calculate the term.");
+            return;
+        }
+        term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
+        document.getElementById("result-term").textContent = Math.ceil(term);
+    }
 
-    document.getElementById("monthly-payment").textContent = monthlyPayment.toFixed(2);
-    document.getElementById("total-payment").textContent = totalPayment.toFixed(2);
-    document.getElementById("total-interest").textContent = totalInterest.toFixed(2);
+    // Calculate total interest paid
+    let totalPayment = periodicRepayment * term;
+    let totalInterest = totalPayment - loanAmount;
+    document.getElementById("result-totalInterest").textContent = totalInterest.toFixed(2);
 }
