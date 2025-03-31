@@ -1,20 +1,21 @@
-# គណនាឥណទាន (ACLEDA Bank Style)
+# Loan Calculator (ACLEDA Bank Style)
 
-នេះគឺជាកម្មវិធីគណនាឥណទានដែលគណនាចំនួនឥណទាន ការបង់ប្រាក់ប្រចាំ និងរយៈពេលដោយស្វ័យប្រវត្តិ។  
+This is a loan calculator that calculates loan amount, periodic repayments, and term dynamically.  
 
-## លក្ខណៈពិសេស
-- បញ្ចូលចំនួនឥណទាន ការបង់ប្រាក់ប្រចាំ រយៈពេល និងអត្រាការប្រាក់។
-- ជ្រើសរើសអំឡុងពេលបង់ប្រាក់ (ប្រចាំខែ, ប្រចាំត្រីមាស, ប្រចាំឆ្នាំ)។
-- ជ្រើសរើសវិធីសាស្ត្របង់ប្រាក់ (រាបស្មើ, អាណុយអ៊ីតេ)។
-- គណនាអំពីការបង់ការប្រាក់សរុប។
+## Features
+- Enter loan amount, periodic repayments, term, and interest rate.
+- Select repayment period (Monthly, Quarterly, Annually).
+- Choose between "Linear" and "Annuity" payment methods.
+- Automatic calculations based on missing values.
+- Displays total interest paid.
 
-## របៀបប្រើ
-1. បើក `index.html` នៅក្នុងកម្មវិធីរុករក។
-2. ទុក **វាលណាមួយទទេ** (ចំនួនឥណទាន, ការបង់ប្រាក់, ឬ រយៈពេល)។
-3. បំពេញព័ត៌មានផ្សេងៗ។
-4. ចុច **គណនា** ដើម្បីមើលលទ្ធផល។
+## How to Use
+1. Open `index.html` in a browser.
+2. Leave **one field empty** (Loan Amount, Repayments, or Term).
+3. Enter valid values in other fields.
+4. Click "Process" to see results.
 
-## បច្ចេកវិទ្យាដែលប្រើ
+## Technologies Used
 - HTML
 - CSS
 - JavaScript
