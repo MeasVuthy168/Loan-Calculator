@@ -1,41 +1,46 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #121b29;
-    color: white;
-}
+function calculateLoan() {
+    let loanAmount = parseFloat(document.getElementById("loanAmount").value);
+    let periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
+    let term = parseFloat(document.getElementById("term").value);
+    let interestRate = parseFloat(document.getElementById("interestRate").value);
+    let repaymentPeriod = document.getElementById("repaymentPeriod").value;
+    let paymentMethod = document.getElementById("paymentMethod").value;
 
-.container {
-    width: 350px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #1c2738;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
+    let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
+    let monthlyRate = (interestRate / 100) / periodsPerYear;
+    
+    // If loan amount is missing, calculate it
+    if (isNaN(loanAmount)) {
+        if (isNaN(periodicRepayment) || isNaN(term)) {
+            alert("Please enter enough data to calculate the Loan Amount!");
+            return;
+        }
+        loanAmount = (periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term))) / monthlyRate;
+        document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
+    }
 
-input, select {
-    width: 90%;
-    padding: 8px;
-    margin: 5px 0;
-    background: #223146;
-    color: white;
-    border: 1px solid #3a4f6a;
-}
+    // If periodic repayment is missing, calculate it
+    if (isNaN(periodicRepayment)) {
+        if (isNaN(loanAmount) || isNaN(term)) {
+            alert("Please enter enough data to calculate the Periodic Repayments!");
+            return;
+        }
+        periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
+        document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
+    }
 
-button {
-    padding: 10px;
-    background: #2a8bf2;
-    color: white;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
+    // If term is missing, calculate it
+    if (isNaN(term)) {
+        if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
+            alert("Please enter enough data to calculate the Term!");
+            return;
+        }
+        term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
+        document.getElementById("result-term").textContent = Math.ceil(term);
+    }
 
-button:hover {
-    background: #1f6ed5;
-}
-
-h3 {
-    margin-top: 20px;
+    // Calculate total interest paid
+    let totalPayment = periodicRepayment * term;
+    let totalInterest = totalPayment - loanAmount;
+    document.getElementById("result-totalInterest").textContent = totalInterest.toFixed(2);
 }
