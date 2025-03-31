@@ -12,7 +12,7 @@ function calculateLoan() {
     // If loan amount is missing, calculate it
     if (isNaN(loanAmount)) {
         if (isNaN(periodicRepayment) || isNaN(term)) {
-            alert("Please provide enough information to calculate the loan amount.");
+            alert("សូមបំពេញព័ត៌មានគ្រប់គ្រាន់ដើម្បីគណនាចំនួនឥណទាន!");
             return;
         }
         loanAmount = (periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term))) / monthlyRate;
@@ -22,7 +22,7 @@ function calculateLoan() {
     // If periodic repayment is missing, calculate it
     if (isNaN(periodicRepayment)) {
         if (isNaN(loanAmount) || isNaN(term)) {
-            alert("Please provide enough information to calculate periodic repayments.");
+            alert("សូមបំពេញព័ត៌មានគ្រប់គ្រាន់ដើម្បីគណនាការបង់ប្រាក់!");
             return;
         }
         periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
@@ -32,7 +32,7 @@ function calculateLoan() {
     // If term is missing, calculate it
     if (isNaN(term)) {
         if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
-            alert("Please provide enough information to calculate the term.");
+            alert("សូមបំពេញព័ត៌មានគ្រប់គ្រាន់ដើម្បីគណនារយៈពេល!");
             return;
         }
         term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
