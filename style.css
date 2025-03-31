@@ -1,32 +1,41 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
+    background-color: #121b29;
+    color: white;
 }
 
 .container {
-    width: 300px;
+    width: 350px;
     margin: 50px auto;
     padding: 20px;
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #1c2738;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-input {
+input, select {
     width: 90%;
     padding: 8px;
     margin: 5px 0;
+    background: #223146;
+    color: white;
+    border: 1px solid #3a4f6a;
 }
 
 button {
     padding: 10px;
-    background: blue;
+    background: #2a8bf2;
     color: white;
     border: none;
     cursor: pointer;
+    width: 100%;
 }
 
 button:hover {
-    background: darkblue;
+    background: #1f6ed5;
+}
+
+h3 {
+    margin-top: 20px;
 }
