@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Calculator</title>
+    <title>គណនាឥណទាន</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Loan Calculator</h2>
+        <h2>គណនាឥណទាន</h2>
 
-        <p><strong>Instructions:</strong> Leave the field you want to calculate empty.</p>
+        <p><strong>សេចក្ដីណែនាំ:</strong> ទុកវាលណាដែលអ្នកចង់គណនាវាចោល។</p>
 
-        <label for="loanAmount">Loan Amount ($):</label>
-        <input type="number" id="loanAmount" placeholder="Enter amount">
+        <label for="loanAmount">ចំនួនឥណទាន ($):</label>
+        <input type="number" id="loanAmount" placeholder="បញ្ចូលចំនួន">
 
-        <label for="periodicRepayment">Periodic Repayments ($):</label>
-        <input type="number" id="periodicRepayment" placeholder="Enter repayment">
+        <label for="periodicRepayment">ការបង់ប្រាក់ប្រចាំ ($):</label>
+        <input type="number" id="periodicRepayment" placeholder="បញ្ចូលការបង់ប្រាក់">
 
-        <label for="repaymentPeriod">Repayment Period:</label>
+        <label for="repaymentPeriod">អំឡុងពេលបង់ប្រាក់:</label>
         <select id="repaymentPeriod">
-            <option value="Monthly">Monthly</option>
-            <option value="Quarterly">Quarterly</option>
-            <option value="Annually">Annually</option>
+            <option value="Monthly">ប្រចាំខែ</option>
+            <option value="Quarterly">ប្រចាំត្រីមាស</option>
+            <option value="Annually">ប្រចាំឆ្នាំ</option>
         </select>
 
-        <label for="term">Term (Months):</label>
-        <input type="number" id="term" placeholder="Enter term">
+        <label for="term">រយៈពេល (ខែ):</label>
+        <input type="number" id="term" placeholder="បញ្ចូលរយៈពេល">
 
-        <label for="interestRate">Annual Interest Rate (%):</label>
-        <input type="number" id="interestRate" placeholder="Enter interest rate">
+        <label for="interestRate">អត្រាការប្រាក់ប្រចាំឆ្នាំ (%):</label>
+        <input type="number" id="interestRate" placeholder="បញ្ចូលអត្រាការប្រាក់">
 
-        <label for="paymentMethod">Payment Method:</label>
+        <label for="paymentMethod">វិធីសាស្ត្របង់ប្រាក់:</label>
         <select id="paymentMethod">
-            <option value="Linear">Linear</option>
-            <option value="Annuity">Annuity</option>
+            <option value="Linear">រាបស្មើ</option>
+            <option value="Annuity">អាណុយអ៊ីតេ</option>
         </select>
 
-        <button onclick="calculateLoan()">Process</button>
+        <button onclick="calculateLoan()">គណនា</button>
 
-        <h3>Results:</h3>
-        <p>Loan Amount: <span id="result-loanAmount">-</span></p>
-        <p>Periodic Repayments: <span id="result-periodicRepayment">-</span></p>
-        <p>Term (Months): <span id="result-term">-</span></p>
-        <p>Total Interest Paid: <span id="result-totalInterest">-</span></p>
+        <h3>លទ្ធផល:</h3>
+        <p>ចំនួនឥណទាន: <span id="result-loanAmount">-</span></p>
+        <p>ការបង់ប្រាក់ប្រចាំ: <span id="result-periodicRepayment">-</span></p>
+        <p>រយៈពេល (ខែ): <span id="result-term">-</span></p>
+        <p>ការប្រាក់ទាំងស្រុង: <span id="result-totalInterest">-</span></p>
     </div>
 
     <script src="script.js"></script>
