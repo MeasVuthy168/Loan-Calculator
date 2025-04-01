@@ -28,8 +28,8 @@ function calculateLoan() {
         if (paymentMethod === "Annuity") {
             loanAmount = periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate;
         } else {
-            // Linear: Loan Amount Calculation using first repayment
-            let principalPayment = periodicRepayment - (loanAmount * monthlyRate);
+            // **Linear: Loan Amount Calculation using first repayment**
+            let principalPayment = periodicRepayment / (1 + (monthlyRate * (term - 1) / 2));
             loanAmount = principalPayment * term;
         }
     } else if (isNaN(periodicRepayment)) {
@@ -40,7 +40,6 @@ function calculateLoan() {
         if (paymentMethod === "Annuity") {
             periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
         } else {
-            // Linear: Calculate First Repayment
             let principalPayment = loanAmount / term;
             periodicRepayment = principalPayment + (loanAmount * monthlyRate); // First repayment
         }
@@ -57,16 +56,13 @@ function calculateLoan() {
             // **Linear Repayment: Find term iteratively**
             let remainingBalance = loanAmount;
             let months = 0;
-            let fixedPrincipal = loanAmount / 100000; // Incremental step
+            let principalPayment = loanAmount / 100000; // Approximate principal step
 
             while (remainingBalance > 0) {
                 let interestPayment = remainingBalance * monthlyRate;
-                let principalPayment = periodicRepayment - interestPayment;
+                let monthlyRepayment = principalPayment + interestPayment;
 
-                if (principalPayment <= 0) {
-                    alert("ការបង់សងមិនគ្រប់គ្រាន់ដើម្បីទ្រទ្រង់ការបង់ការប្រាក់!");
-                    return;
-                }
+                if (monthlyRepayment > periodicRepayment) break;
 
                 remainingBalance -= principalPayment;
                 months++;
