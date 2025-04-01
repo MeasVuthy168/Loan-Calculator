@@ -53,12 +53,16 @@ function calculateLoan() {
         } else {
             // **Linear Repayment: Solve for Term**
             let remainingBalance = loanAmount;
-            let principalPayment = loanAmount / periodicRepayment; // Fixed principal each period
             let months = 0;
 
             while (remainingBalance > 0) {
                 let interestPayment = remainingBalance * monthlyRate;
-                let totalPayment = principalPayment + interestPayment;
+                let principalPayment = periodicRepayment - interestPayment;
+
+                if (principalPayment <= 0) {
+                    alert("ការបង់សងមិនគ្រប់គ្រាន់ដើម្បីទ្រទ្រង់ការបង់ការប្រាក់!");
+                    return;
+                }
 
                 remainingBalance -= principalPayment;
                 months++;
