@@ -28,7 +28,9 @@ function calculateLoan() {
         if (paymentMethod === "Annuity") {
             loanAmount = periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate;
         } else {
-            loanAmount = periodicRepayment / ((1 / term) + monthlyRate);
+            // Linear: Calculate loan amount using first repayment formula
+            let principalPayment = periodicRepayment - (loanAmount * monthlyRate);
+            loanAmount = principalPayment * term;
         }
     } else if (isNaN(periodicRepayment)) {
         if (isNaN(loanAmount) || isNaN(term)) {
@@ -38,8 +40,9 @@ function calculateLoan() {
         if (paymentMethod === "Annuity") {
             periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
         } else {
+            // Linear: First repayment includes interest on full loan amount
             let principalPayment = loanAmount / term;
-            periodicRepayment = principalPayment + (loanAmount * monthlyRate); // First payment
+            periodicRepayment = principalPayment + (loanAmount * monthlyRate);
         }
     } else if (isNaN(term)) {
         if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
@@ -51,7 +54,7 @@ function calculateLoan() {
             term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
             term = Math.ceil(term);
         } else {
-            // **Linear Repayment: Solve for Term**
+            // **Linear Repayment: Find term iteratively**
             let remainingBalance = loanAmount;
             let months = 0;
 
