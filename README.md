@@ -10,7 +10,7 @@ This is a loan calculator that calculates loan amount, periodic repayments, and 
 - Displays total interest paid.
 
 ## How to Use
-1. Open `index.html` in a browser.
+1. Open `Loan_Calculator.html` in a browser.
 2. Leave **one field empty** (Loan Amount, Repayments, or Term).
 3. Enter valid values in other fields.
 4. Click "Process" to see results.
