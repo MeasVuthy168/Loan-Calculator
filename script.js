@@ -29,7 +29,7 @@ function calculateLoan() {
         if (paymentMethod === "Annuity") {
             loanAmount = periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate;
         } else {
-            loanAmount = (periodicRepayment * term) / (1 + ((interestRate * (term - 1)) / (2 * 100)));
+            loanAmount = (periodicRepayment * term) / (1 + ((interestRate / 12) * ((term - 1) / 2)));
         }
     } else if (isNaN(periodicRepayment)) {
         // **គណនាប្រាក់ សំណង ខួប**
