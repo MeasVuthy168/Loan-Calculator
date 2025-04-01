@@ -6,11 +6,11 @@ function calculateLoan() {
     let repaymentPeriod = document.getElementById("repaymentPeriod").value;
     let paymentMethod = document.getElementById("paymentMethod").value;
 
-    // Determine the number of payments per year
+    // កំណត់ចំនួនការបង់ក្នុងមួយឆ្នាំ
     let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
     let monthlyRate = (interestRate / 100) / periodsPerYear;
 
-    // Ensure at least one value is missing
+    // ត្រូវទុកប្រអប់ណាមួយនៅទទេ
     let missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
     if (missingFields !== 1) {
         alert("សូមទុកប្រអប់ណាមួយ ដែលលោកអ្នកចង់គណនាឱ្យ នៅ ទទេ");
@@ -19,9 +19,32 @@ function calculateLoan() {
 
     let totalInterest = 0;
 
-    // **Calculate missing field**
-    if (isNaN(term)) {
-        // **Calculate Loan Term**
+    // **គណនាតម្លៃដែលបាត់**
+    if (isNaN(loanAmount)) {
+        // **គណនា ទំហំឥណទាន**
+        if (isNaN(periodicRepayment) || isNaN(term)) {
+            alert("ដើម្បី គណនា ទំហំឥណទាន៖ បញ្ចូល ប្រាក់ សំណង ខួប និង រយៈពេល ខ្ចី (គិត ជា ខែ)");
+            return;
+        }
+        if (paymentMethod === "Annuity") {
+            loanAmount = periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate;
+        } else {
+            loanAmount = periodicRepayment / ((1 / term) + monthlyRate);
+        }
+    } else if (isNaN(periodicRepayment)) {
+        // **គណនាប្រាក់ សំណង ខួប**
+        if (isNaN(loanAmount) || isNaN(term)) {
+            alert("ដើម្បី គណនាប្រាក់ សំណង ខួប៖ បញ្ចូល ទំហំ ឥណទាន និង រយៈពេល ខ្ចី (គិត ជា ខែ)");
+            return;
+        }
+        if (paymentMethod === "Annuity") {
+            periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
+        } else {
+            let principalPayment = loanAmount / term;
+            periodicRepayment = principalPayment + (loanAmount * monthlyRate); // First payment
+        }
+    } else if (isNaN(term)) {
+        // **គណនា រយៈពេល ខ្ចី**
         if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
             alert("ដើម្បី គណនា រយៈពេល ខ្ចី៖ បញ្ចូល ទំហំឥណទាន និង ប្រាក់ សំណង ខួប");
             return;
@@ -39,8 +62,8 @@ function calculateLoan() {
                 let interestPayment = remainingBalance * monthlyRate;
                 let totalPayment = fixedPrincipalPayment + interestPayment;
 
-                if (totalPayment > periodicRepayment) {
-                    months++;  // Keep counting months
+                if (totalPayment <= periodicRepayment) {
+                    months++;  // Count months
                     remainingBalance -= fixedPrincipalPayment; // Reduce balance
                 } else {
                     break;
@@ -50,11 +73,11 @@ function calculateLoan() {
         }
     }
 
-    // Calculate total interest paid
+    // គណនាប្រាក់ការ​សរុប
     let totalPayment = periodicRepayment * term;
     totalInterest = totalPayment - loanAmount;
 
-    // Update results
+    // បង្ហាញលទ្ធផល
     document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
     document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
     document.getElementById("result-term").textContent = term;
