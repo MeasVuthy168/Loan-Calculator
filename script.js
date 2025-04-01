@@ -6,11 +6,11 @@ function calculateLoan() {
     let repaymentPeriod = document.getElementById("repaymentPeriod").value;
     let paymentMethod = document.getElementById("paymentMethod").value;
 
-    // Define number of payments per year
+    // កំណត់ចំនួនការបង់ក្នុងមួយឆ្នាំ
     let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
     let monthlyRate = (interestRate / 100) / periodsPerYear;
 
-    // Validate: Only one field should be empty
+    // ត្រូវទុកប្រអប់ណាមួយនៅទទេ
     let missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
     if (missingFields !== 1) {
         alert("សូមទុកប្រអប់ណាមួយ ដែលលោកអ្នកចង់គណនាឱ្យ នៅ ទទេ");
@@ -19,64 +19,46 @@ function calculateLoan() {
 
     let totalInterest = 0;
 
-    // **Calculate the missing value**
+    // គណនាតម្លៃដែលបាត់
     if (isNaN(loanAmount)) {
+        // គណនា ទំហំឥណទាន
         if (isNaN(periodicRepayment) || isNaN(term)) {
-            alert("បញ្ចូល ប្រាក់សំណងខួប និង រយៈពេលខ្ចី (គិតជា ខែ) ដើម្បីគណនា ទំហំឥណទាន");
+            alert("ដើម្បី គណនា ទំហំឥណទាន៖ បញ្ចូល ប្រាក់ សំណង ខួប និង រយៈពេល ខ្ចី (គិត ជា ខែ)");
             return;
         }
         if (paymentMethod === "Annuity") {
             loanAmount = periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate;
         } else {
-            // **Linear: Loan Amount Calculation using first repayment**
-            let principalPayment = periodicRepayment / (1 + (monthlyRate * (term - 1) / 2));
-            loanAmount = principalPayment * term;
+            // Formula for Linear Repayment Loan Amount
+            loanAmount = periodicRepayment / ((1 / term) + monthlyRate);
         }
     } else if (isNaN(periodicRepayment)) {
+        // គណនាប្រាក់ សំណង ខួប
         if (isNaN(loanAmount) || isNaN(term)) {
-            alert("បញ្ចូល ទំហំ ឥណទាន និង រយៈពេល ខ្ចី ដើម្បីគណនាប្រាក់សំណងខួប");
+            alert("ដើម្បី គណនាប្រាក់ សំណង ខួប៖ បញ្ចូល ទំហំ ឥណទាន និង រយៈពេល ខ្ចី (គិត ជា ខែ)");
             return;
         }
         if (paymentMethod === "Annuity") {
             periodicRepayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term));
         } else {
             let principalPayment = loanAmount / term;
-            periodicRepayment = principalPayment + (loanAmount * monthlyRate); // First repayment
+            periodicRepayment = principalPayment + (loanAmount * monthlyRate); // First payment
         }
     } else if (isNaN(term)) {
+        // គណនា រយៈពេល ខ្ចី
         if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
-            alert("បញ្ចូល ទំហំឥណទាន និង ប្រាក់សំណងខួប ដើម្បីគណនា រយៈពេលខ្ចី");
+            alert("ដើម្បី គណនា រយៈពេល ខ្ចី៖ បញ្ចូល ទំហំឥណទាន និង ប្រាក់ សំណង ខួប");
             return;
         }
-
-        if (paymentMethod === "Annuity") {
-            term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
-            term = Math.ceil(term);
-        } else {
-            // **Linear Repayment: Find term iteratively**
-            let remainingBalance = loanAmount;
-            let months = 0;
-            let principalPayment = loanAmount / 100000; // Approximate principal step
-
-            while (remainingBalance > 0) {
-                let interestPayment = remainingBalance * monthlyRate;
-                let monthlyRepayment = principalPayment + interestPayment;
-
-                if (monthlyRepayment > periodicRepayment) break;
-
-                remainingBalance -= principalPayment;
-                months++;
-            }
-
-            term = months;
-        }
+        term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
+        term = Math.ceil(term);
     }
 
-    // **Calculate total interest**
+    // គណនាប្រាក់ការ​សរុប
     let totalPayment = periodicRepayment * term;
     totalInterest = totalPayment - loanAmount;
 
-    // **Display results**
+    // បង្ហាញលទ្ធផល
     document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
     document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
     document.getElementById("result-term").textContent = term;
