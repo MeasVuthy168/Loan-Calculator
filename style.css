@@ -22,6 +22,8 @@ body {
     cursor: pointer;
     transition: background 0.3s;
     z-index: 1000;
+    width: auto;
+    display: inline-block;
 }
 
 .back-button:hover {
