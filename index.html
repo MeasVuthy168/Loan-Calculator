@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>គណនាការខ្ចីប្រាក់</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #121b29;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    .back-button {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding: 8px 14px;
+      font-size: 14px;
+      background-color: #2a8bf2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 1000;
+    }
+    .back-button:hover {
+      background-color: #1f6ed5;
+    }
+    .container {
+      width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1c2738;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+    label {
+      width: 50%;
+      text-align: left;
+      font-weight: bold;
+    }
+    input, select {
+      width: 45%;
+      padding: 8px;
+      background: #223146;
+      color: white;
+      border: 1px solid #3a4f6a;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      background: #2a8bf2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1f6ed5;
+    }
+    .result-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 5px 0;
+    }
+    h3 {
+      margin-top: 20px;
+      text-align: center;
+    }
+    @media screen and (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 15px;
+      }
+      label {
+        width: 40%;
+      }
+      input, select {
+        width: 55%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
+    ⬅ ត្រឡប់ទៅទំព័រមេ
+  </button>
+
+  <div class="container">
+    <h2>កម្មវិធីគណនាការខ្ចីប្រាក់</h2>
+
+    <div class="form-group">
+      <label for="loanAmount">ទំហំឥណទាន:</label>
+      <input type="number" id="loanAmount" placeholder="បញ្ចូលប្រាក់ខ្ចី">
+    </div>
+
+    <div class="form-group">
+      <label for="periodicRepayment">ប្រាក់សងខួប:</label>
+      <input type="number" id="periodicRepayment" placeholder="បញ្ចូលប្រាក់សងខួប">
+    </div>
+
+    <div class="form-group">
+      <label for="repaymentPeriod">ប្រភេទសង:</label>
+      <select id="repaymentPeriod">
+        <option value="Monthly">រៀងរាល់ខែ</option>
+        <option value="Quarterly">រៀងរាល់ត្រីមាស</option>
+        <option value="Annually">រៀងរាល់ឆ្នាំ</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="term">រយៈពេលខ្ចី (ខែ):</label>
+      <input type="number" id="term" placeholder="បញ្ចូលចំនួនខែ">
+    </div>
+
+    <div class="form-group">
+      <label for="interestRate">អត្រាការប្រាក់ប្រចាំឆ្នាំ (%):</label>
+      <input type="number" id="interestRate" placeholder="បញ្ចូលអត្រាការប្រាក់">
+    </div>
+
+    <div class="form-group">
+      <label for="paymentMethod">របៀបបង់ប្រាក់:</label>
+      <select id="paymentMethod">
+        <option value="Linear">បង់ថយ</option>
+        <option value="Annuity">បង់ថេរ</option>
+      </select>
+    </div>
+
+    <button onclick="calculateLoan()">គណនា</button>
+
+    <h3>លទ្ធផល:</h3>
+    <div class="result-group">
+      <label>ទំហំឥណទាន:</label>
+      <span id="result-loanAmount">-</span>
+    </div>
+    <div class="result-group">
+      <label>ប្រាក់សងខួប:</label>
+      <span id="result-periodicRepayment">-</span>
+    </div>
+    <div class="result-group">
+      <label>រយៈពេលខ្ចី (ខែ):</label>
+      <span id="result-term">-</span>
+    </div>
+    <div class="result-group">
+      <label>ការប្រាក់សរុប:</label>
+      <span id="result-totalInterest">-</span>
+    </div>
+  </div>
+
+  <script>
+    function calculateLoan() {
+      let loanAmount = parseFloat(document.getElementById("loanAmount").value);
+      let periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
+      let term = parseFloat(document.getElementById("term").value);
+      let interestRate = parseFloat(document.getElementById("interestRate").value);
+      let repaymentPeriod = document.getElementById("repaymentPeriod").value;
+      let paymentMethod = document.getElementById("paymentMethod").value;
+
+      let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
+      let monthlyRate = (interestRate / 100) / periodsPerYear;
+
+      let missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
+      if (missingFields !== 1) {
+        alert("សូមទុកប្រអប់ណាមួយ ដែលលោកអ្នកចង់គណនាឱ្យ នៅ ទទេ");
+        return;
+      }
+
+      let totalInterest = 0;
+
+      if (isNaN(loanAmount)) {
+        if (isNaN(periodicRepayment) || isNaN(term)) {
+          alert("ដើម្បីគណនាទំហំឥណទាន៖ បញ្ចូលប្រាក់សងខួប និងរយៈពេលខ្ចី");
+          return;
+        }
+        loanAmount = paymentMethod === "Annuity"
+          ? periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate
+          : periodicRepayment / ((1 / term) + monthlyRate);
+      } else if (isNaN(periodicRepayment)) {
+        if (isNaN(loanAmount) || isNaN(term)) {
+          alert("ដើម្បីគណនាប្រាក់សងខួប៖ បញ្ចូលទំហំឥណទាន និងរយៈពេលខ្ចី");
+          return;
+        }
+        periodicRepayment = paymentMethod === "Annuity"
+          ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term))
+          : (loanAmount / term) + (loanAmount * monthlyRate);
+      } else if (isNaN(term)) {
+        if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
+          alert("ដើម្បីគណនារយៈពេលខ្ចី៖ បញ្ចូលទំហំឥណទាន និងប្រាក់សងខួប");
+          return;
+        }
+        term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
+        term = Math.ceil(term);
+      }
+
+      let totalPayment = periodicRepayment * term;
+      totalInterest = totalPayment - loanAmount;
+
+      document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
+      document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
+      document.getElementById("result-term").textContent = term;
+      document.getElementById("result-totalInterest").textContent = totalInterest.toFixed(2);
+    }
+  </script>
+</body>
+</html>
