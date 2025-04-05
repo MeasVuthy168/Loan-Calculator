@@ -1,290 +1,32 @@
-<!DOCTYPE html>
-<html lang="km">
-<head>
-  <meta charset="UTF-8" />
-  <title>កម្មវិធី​គណនា​ឥណទាន</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    body {
-      font-family: 'Khmer OS System', Arial, sans-serif;
-      background-color: #121b29;
-      color: white;
-      margin: 0;
-      padding: 20px;
+<script>
+  function exportToExcel() {
+    const exportSection = document.getElementById("exportSection");
+
+    if (!exportSection || exportSection.innerHTML.trim() === "") {
+      alert("សូមគណនាមុននឹងនាំចេញ។");
+      return;
     }
 
-    .back-button {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background-color: #2a8bf2;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      font-size: 14px;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 1000;
-    }
+    // Clone content to clean it
+    const clone = exportSection.cloneNode(true);
+    clone.querySelectorAll("table").forEach(t => {
+      t.style.border = "1px solid #000";
+    });
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: #1c2738;
-      padding: 20px;
-      border-radius: 10px;
-    }
+    // Combine all table data
+    const tables = clone.querySelectorAll("table");
+    const wb = XLSX.utils.book_new();
+    let data = [];
 
-    .form-group {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
+    tables.forEach((table, idx) => {
+      const sheet = XLSX.utils.table_to_sheet(table);
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      if (idx > 0) data.push([""]); // space between summary & schedule
+      data = data.concat(rows);
+    });
 
-    .form-group label {
-      flex: 0 0 45%;
-    }
-
-    .form-group input,
-    .form-group select {
-      flex: 0 0 50%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #444;
-      background: #223146;
-      color: white;
-    }
-
-    button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 12px;
-      background-color: #2a8bf2;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .export-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: #1e2e3e;
-      border-radius: 10px;
-      font-size: 13px;
-      overflow: hidden;
-    }
-
-    th, td {
-      border: 1px solid #444;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #2a8bf2;
-      color: white;
-    }
-
-    .total-row {
-      font-weight: bold;
-      background: #0b5ed7;
-      color: white;
-    }
-
-    @media (max-width: 600px) {
-      .form-group {
-        flex-direction: column;
-      }
-
-      .form-group label,
-      .form-group input,
-      .form-group select {
-        flex: 1 1 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
-    ⬅ ត្រឡប់ទៅទំព័រដើម
-  </button>
-
-  <div class="container">
-    <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
-
-    <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
-    <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
-    <div class="form-group"><label>រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
-    <div class="form-group"><label>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
-    <div class="form-group">
-      <label>ប្រភេទសង:</label>
-      <select id="repaymentPeriod">
-        <option value="Monthly">រៀងរាល់ខែ</option>
-        <option value="Quarterly">រៀងរាល់ត្រីមាស</option>
-        <option value="Annually">រៀងរាល់ឆ្នាំ</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>របៀបសងប្រាក់:</label>
-      <select id="paymentMethod">
-        <option value="Linear">បង់ថយ</option>
-        <option value="Annuity">បង់ថេរ</option>
-      </select>
-    </div>
-
-    <button onclick="calculateLoan()">គណនា</button>
-
-    <div class="export-buttons">
-      <button onclick="exportToPDF()">នាំចេញ PDF</button>
-      <button onclick="exportToExcel()">នាំចេញ Excel</button>
-    </div>
-
-    <div id="exportSection"></div>
-  </div>
-
-  <script>
-    // Auto logout after 5 minutes
-    const AUTO_LOGOUT_MINUTES = 5;
-    let logoutTimer;
-
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-
-    function calculateLoan() {
-      const loan = parseFloat(document.getElementById("loanAmount").value);
-      const repayment = parseFloat(document.getElementById("periodicRepayment").value);
-      const term = parseFloat(document.getElementById("term").value);
-      const interestRate = parseFloat(document.getElementById("interestRate").value);
-      const repaymentPeriod = document.getElementById("repaymentPeriod").value;
-      const method = document.getElementById("paymentMethod").value;
-
-      const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1);
-      let loanVal = loan, payVal = repayment, months = term;
-
-      const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
-      if (missing !== 1) {
-        alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
-        return;
-      }
-
-      if (isNaN(loanVal)) {
-        loanVal = method === "Annuity"
-          ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
-          : payVal / ((1 / months) + rate);
-      } else if (isNaN(payVal)) {
-        payVal = method === "Annuity"
-          ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
-          : (loanVal / months) + (loanVal * rate);
-      } else if (isNaN(months)) {
-        months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
-      }
-
-      let balance = loanVal;
-      let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-
-      let html = `<h3>តារាងកាលវិភាគសងប្រាក់</h3>`;
-      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
-      <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
-      <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-      <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-      <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-
-      html += `<table><thead><tr><th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th></tr></thead><tbody>`;
-
-      for (let i = 1; i <= months; i++) {
-        const interest = balance * rate;
-        const principal = method === "Annuity" ? payVal - interest : loanVal / months;
-        const payment = method === "Annuity" ? payVal : principal + interest;
-        balance -= principal;
-        if (balance < 0) balance = 0;
-
-        totalPrincipal += principal;
-        totalInterest += interest;
-        totalPayment += payment;
-
-        html += `<tr>
-          <td>${i}</td>
-          <td>${principal.toFixed(2)}</td>
-          <td>${interest.toFixed(2)}</td>
-          <td>${payment.toFixed(2)}</td>
-          <td>${balance.toFixed(2)}</td>
-        </tr>`;
-      }
-
-      html += `<tr class="total-row">
-        <td>សរុប</td>
-        <td>${totalPrincipal.toFixed(2)}</td>
-        <td>${totalInterest.toFixed(2)}</td>
-        <td>${totalPayment.toFixed(2)}</td>
-        <td>-</td>
-      </tr></tbody></table>`;
-
-      document.getElementById("exportSection").innerHTML = html;
-    }
-
-    function exportToPDF() {
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
-
-      html2pdf().set({
-        margin: 0.5,
-        filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
-        pagebreak: { mode: ['avoid-all'] },
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, scrollY: 0, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).from(element).save();
-    }
-
-    function exportToExcel() {
-      const summary = document.querySelector("#exportSection table:nth-of-type(1)");
-      const schedule = document.querySelector("#exportSection table:nth-of-type(2)");
-
-      if (!summary || !schedule) {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
-
-      const wb = XLSX.utils.book_new();
-      const summarySheet = XLSX.utils.table_to_sheet(summary);
-      const scheduleSheet = XLSX.utils.table_to_sheet(schedule);
-
-      const summaryData = XLSX.utils.sheet_to_json(summarySheet, { header: 1 });
-      const scheduleData = XLSX.utils.sheet_to_json(scheduleSheet, { header: 1 });
-
-      const mergedData = summaryData.concat([[]], scheduleData);
-      const ws = XLSX.utils.aoa_to_sheet(mergedData);
-
-      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
-      XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
-    }
-  </script>
-</body>
-</html>
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
+    XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
+  }
+</script>
