@@ -15,6 +15,20 @@
       padding: 20px;
     }
 
+    .back-button {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #2a8bf2;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
     .container {
       max-width: 600px;
       margin: auto;
@@ -110,6 +124,10 @@
   </style>
 </head>
 <body>
+  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
+    ⬅ ត្រឡប់ទៅទំព័រដើម
+  </button>
+
   <div class="container">
     <h2>កម្មវិធី​គណនា​ឥណទាន</h2>
 
@@ -118,7 +136,7 @@
       <input type="number" id="loanAmount" />
     </div>
     <div class="form-group">
-      <label for="periodicRepayment">ប្រាក់សងខួប:</label>
+      <label for="periodicRepayment">ប្រាក់សំណងខួប:</label>
       <input type="number" id="periodicRepayment" />
     </div>
     <div class="form-group">
@@ -126,7 +144,7 @@
       <input type="number" id="term" />
     </div>
     <div class="form-group">
-      <label for="interestRate">អត្រាការប្រាក់ប្រចាំឆ្នាំ (%):</label>
+      <label for="interestRate">អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label>
       <input type="number" id="interestRate" />
     </div>
     <div class="form-group">
@@ -138,7 +156,7 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="paymentMethod">របៀបបង់ប្រាក់:</label>
+      <label for="paymentMethod">របៀបសងប្រាក់:</label>
       <select id="paymentMethod">
         <option value="Linear">បង់ថយ</option>
         <option value="Annuity">បង់ថេរ</option>
@@ -156,67 +174,75 @@
   </div>
 
   <script>
+    // Auto logout after 5 minutes
+    const AUTO_LOGOUT_MINUTES = 5;
+    let logoutTimer;
+
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+
     function calculateLoan() {
-      const loanAmount = parseFloat(document.getElementById("loanAmount").value);
-      const periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
+      const loan = parseFloat(document.getElementById("loanAmount").value);
+      const repayment = parseFloat(document.getElementById("periodicRepayment").value);
       const term = parseFloat(document.getElementById("term").value);
       const interestRate = parseFloat(document.getElementById("interestRate").value);
       const repaymentPeriod = document.getElementById("repaymentPeriod").value;
-      const paymentMethod = document.getElementById("paymentMethod").value;
+      const method = document.getElementById("paymentMethod").value;
 
-      const periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
-      const rate = (interestRate / 100) / periodsPerYear;
+      const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1);
 
-      let loan = loanAmount;
-      let pay = periodicRepayment;
-      let months = term;
+      let loanVal = loan, payVal = repayment, months = term;
 
-      const missing = [isNaN(loan), isNaN(pay), isNaN(months)].filter(Boolean).length;
+      const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
       if (missing !== 1) {
-        alert("សូមទុកប្រអប់មួយដើម្បីគណនា (ទំហំឥណទាន ឬ ប្រាក់សង ឬ រយៈពេល)។");
+        alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
         return;
       }
 
-      if (isNaN(loan)) {
-        loan = paymentMethod === "Annuity"
-          ? pay * (1 - Math.pow(1 + rate, -months)) / rate
-          : pay / ((1 / months) + rate);
-      } else if (isNaN(pay)) {
-        pay = paymentMethod === "Annuity"
-          ? (loan * rate) / (1 - Math.pow(1 + rate, -months))
-          : (loan / months) + (loan * rate);
+      if (isNaN(loanVal)) {
+        loanVal = method === "Annuity"
+          ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
+          : payVal / ((1 / months) + rate);
+      } else if (isNaN(payVal)) {
+        payVal = method === "Annuity"
+          ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
+          : (loanVal / months) + (loanVal * rate);
       } else if (isNaN(months)) {
-        months = Math.log(pay / (pay - loan * rate)) / Math.log(1 + rate);
-        months = Math.ceil(months);
+        months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
       }
 
-      let balance = loan;
+      let balance = loanVal;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-      let html = `
-        <h3>សង្ខេបឥណទាន</h3>
-        <table>
-          <tr><th>ទំហំឥណទាន</th><td>${loan.toFixed(2)}</td></tr>
-          <tr><th>ប្រាក់សងខួប</th><td>${pay.toFixed(2)}</td></tr>
-          <tr><th>រយៈពេលខ្ចី</th><td>${months} ខែ</td></tr>
-          <tr><th>ការប្រាក់សរុប</th><td>${(pay * months - loan).toFixed(2)}</td></tr>
-        </table>
-        <br><h3>តារាងបង់ប្រាក់</h3>
-        <table id="scheduleTable">
-          <thead><tr>
-            <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
-          </tr></thead><tbody>
-      `;
+      let html = `<h3>តារាងកាលវិភាគសងប្រាក់</h3>`;
+      html += `<table>
+        <tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
+        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
+        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
+        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
+        <tr><th>របៀបសងប្រាក់</th><td>${method === 'Annuity' ? 'បង់ថេរ' : 'បង់ថយ'}</td></tr>
+      </table>`;
+
+      html += `<br><table id="scheduleTable">
+        <thead><tr>
+          <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
+        </tr></thead><tbody>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
-        const principal = paymentMethod === "Annuity"
-          ? pay - interest
-          : loan / months;
-
-        const payment = paymentMethod === "Annuity"
-          ? pay
-          : principal + interest;
+        const principal = method === "Annuity" ? payVal - interest : loanVal / months;
+        const payment = method === "Annuity" ? payVal : principal + interest;
 
         balance -= principal;
         if (balance < 0) balance = 0;
@@ -246,40 +272,32 @@
     }
 
     function exportToPDF() {
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
+      const el = document.getElementById("exportSection");
+      if (!el || el.innerHTML.trim() === "") {
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
-      const opt = {
+      html2pdf().from(el).set({
         margin: 0.5,
-        filename: 'តារាងសងឥណទាន.pdf',
+        filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', putOnlyUsedFonts: true }
-      };
-
-      html2pdf().from(element).set(opt).save();
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }).save();
     }
 
     function exportToExcel() {
-      const exportSection = document.getElementById("exportSection");
-      if (!exportSection || exportSection.innerHTML.trim() === "") {
+      const exportHTML = document.getElementById("exportSection");
+      if (!exportHTML || exportHTML.innerHTML.trim() === "") {
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
       const wb = XLSX.utils.book_new();
-      const tables = exportSection.querySelectorAll("table");
-
-      tables.forEach((table, index) => {
-        const ws = XLSX.utils.table_to_sheet(table);
-        const sheetName = index === 0 ? "សង្ខេប" : "តារាងបង់ប្រាក់";
-        XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      });
-
-      XLSX.writeFile(wb, "តារាងសងឥណទាន.xlsx");
+      const ws = XLSX.utils.table_to_sheet(exportHTML.querySelector("table"));
+      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
+      XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
     }
   </script>
 </body>
