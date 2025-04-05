@@ -75,10 +75,6 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #1f6ed5;
-    }
-
     .export-buttons {
       display: flex;
       justify-content: center;
@@ -124,6 +120,17 @@
       .form-group input,
       .form-group select {
         flex: 1 1 100%;
+      }
+    }
+
+    @media print {
+      table, tr, td, th {
+        page-break-inside: avoid !important;
+      }
+
+      #exportSection {
+        page-break-before: auto;
+        page-break-after: auto;
       }
     }
   </style>
@@ -179,7 +186,6 @@
   </div>
 
   <script>
-    // Auto logout after 5 minutes of inactivity
     const AUTO_LOGOUT_MINUTES = 5;
     let logoutTimer;
 
@@ -208,7 +214,6 @@
       const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1);
 
       let loanVal = loan, payVal = repayment, months = term;
-
       const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
       if (missing !== 1) {
         alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
@@ -277,19 +282,20 @@
     }
 
     function exportToPDF() {
-      const el = document.getElementById("exportSection");
-      if (!el || el.innerHTML.trim() === "") {
+      const element = document.getElementById("exportSection");
+      if (!element || element.innerHTML.trim() === "") {
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
-      html2pdf().from(el).set({
-        margin: 0.5,
+      html2pdf().set({
+        margin: [0.5, 0.5, 0.5, 0.5],
         filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).save();
+      }).from(element).save();
     }
 
     function exportToExcel() {
@@ -299,18 +305,16 @@
         return;
       }
 
-      const clone = exportHTML.cloneNode(true);
-      const tables = clone.querySelectorAll("table");
-
+      const tables = exportHTML.querySelectorAll("table");
       const wb = XLSX.utils.book_new();
-      let fullTable = [];
+      let allData = [];
 
       tables.forEach(table => {
         const sheet = XLSX.utils.table_to_json(table, { header: 1, raw: false });
-        fullTable = fullTable.concat(sheet, [[""]]); // Space between
+        allData = allData.concat(sheet, [[""]]);
       });
 
-      const ws = XLSX.utils.aoa_to_sheet(fullTable);
+      const ws = XLSX.utils.aoa_to_sheet(allData);
       XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
       XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
     }
