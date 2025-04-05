@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>កម្មវិធី​គណនា​ឥណទាន</title>
 
-  <!-- Required Libraries -->
+  <!-- External Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -46,7 +46,6 @@
       top: 10px;
       left: 10px;
       padding: 8px 14px;
-      font-size: 14px;
       background-color: #2a8bf2;
       color: white;
       border: none;
@@ -64,65 +63,49 @@
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
     .form-group {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
       gap: 10px;
+      margin-bottom: 15px;
     }
 
     .form-group label {
       flex: 0 0 40%;
       font-weight: bold;
-      font-size: 15px;
     }
 
     .form-group input,
     .form-group select {
       flex: 1;
       padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #3a4f6a;
       background: #223146;
       color: white;
-      border: 1px solid #3a4f6a;
-      border-radius: 5px;
-      font-size: 15px;
-      box-sizing: border-box;
     }
 
     button {
-      padding: 12px;
-      background: #2a8bf2;
-      color: white;
-      border: none;
-      cursor: pointer;
       width: 100%;
+      padding: 12px;
       margin-top: 20px;
-      border-radius: 5px;
       font-size: 16px;
+      background-color: #2a8bf2;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
     }
 
     button:hover {
-      background: #1f6ed5;
-    }
-
-    h3 {
-      text-align: center;
-      margin-top: 25px;
-      font-size: 18px;
+      background-color: #1f6ed5;
     }
 
     .result-box {
       background-color: #223146;
+      margin: 10px 0;
       padding: 10px 14px;
       border-radius: 6px;
-      margin-bottom: 10px;
-      font-size: 15px;
-      line-height: 1.5;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
@@ -131,8 +114,6 @@
       border-collapse: collapse;
       margin-top: 20px;
       background-color: #1e2e3e;
-      color: white;
-      font-size: 14px;
     }
 
     th, td {
@@ -143,21 +124,21 @@
 
     th {
       background-color: #2a8bf2;
+      color: white;
     }
 
     #exportButtons {
-      margin-top: 20px;
       text-align: center;
+      margin-top: 20px;
     }
 
     #exportButtons button {
+      margin: 6px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
       background-color: #2a8bf2;
       color: white;
-      padding: 10px 18px;
-      margin: 6px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
       cursor: pointer;
     }
 
@@ -165,86 +146,31 @@
       background-color: #1f6ed5;
     }
 
-    .pdf-header,
-    .pdf-footer {
-      display: none;
-    }
-
     @media screen and (max-width: 600px) {
       .container {
-        width: 92%;
-        padding: 18px;
+        width: 90%;
       }
 
       .form-group {
         flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
+        align-items: flex-start;
       }
 
-      .form-group label {
-        width: 100%;
-        font-size: 14px;
-      }
-
+      .form-group label,
       .form-group input,
       .form-group select {
         width: 100%;
-        font-size: 15px;
-      }
-    }
-
-    @media print {
-      .pdf-header {
-        display: block;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        background: #fff;
-        color: #000;
-        padding: 8px 0;
-        text-align: center;
-        font-size: 14px;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .pdf-footer {
-        display: block;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: #fff;
-        color: #000;
-        text-align: center;
-        padding: 6px 0;
-        font-size: 12px;
-        border-top: 1px solid #ccc;
-      }
-
-      body {
-        margin-top: 60px;
-        margin-bottom: 40px;
-      }
-
-      .pdf-export table tr {
-        page-break-inside: avoid;
-      }
-
-      .pdf-export {
-        page-break-after: auto;
-      }
-
-      .pdf-export table {
-        page-break-inside: auto;
       }
     }
   </style>
 </head>
 <body>
-  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">⬅ ត្រឡប់ទៅទំព័រដើម</button>
+  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
+    ⬅ ត្រឡប់ទៅទំព័រដើម
+  </button>
 
   <div class="container">
-    <h2>កម្មវិធី​គណនា​ឥណទាន</h2>
+    <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
 
     <div class="form-group">
       <label for="loanAmount">ទំហំឥណទាន:</label>
@@ -280,17 +206,14 @@
 
     <button onclick="calculateLoan()">គណនា</button>
 
-    <div id="exportContent" class="pdf-export">
-      <div class="pdf-header"><h3>ACLEDA Bank – Loan Schedule Report</h3></div>
-
+    <div id="exportContent">
       <h3>លទ្ធផល:</h3>
       <div class="result-box" id="box-loanAmount">ទំហំឥណទាន: -</div>
       <div class="result-box" id="box-periodicRepayment">ប្រាក់សងខួប: -</div>
       <div class="result-box" id="box-term">រយៈពេលខ្ចី (ខែ): -</div>
       <div class="result-box" id="box-totalInterest">ការប្រាក់សរុប: -</div>
-      <div id="scheduleTableWrapper"></div>
 
-      <div class="pdf-footer">© 2025 ACLEDA Svay Rieng Branch</div>
+      <div id="scheduleTableWrapper"></div>
     </div>
 
     <div id="exportButtons">
@@ -378,14 +301,18 @@
         <td>${totalInterestSum.toFixed(2)}</td>
         <td>${totalPaymentSum.toFixed(2)}</td>
         <td>-</td>
-      </tr>`;
+      </tr></tbody></table>`;
 
-      scheduleHTML += `</tbody></table>`;
       document.getElementById("scheduleTableWrapper").innerHTML = scheduleHTML;
     }
 
     function exportToPDF() {
-      const element = document.getElementById("exportContent");
+      const exportElement = document.getElementById("exportContent");
+      if (!exportElement || exportElement.innerText.trim() === '') {
+        alert("Please calculate the loan before exporting.");
+        return;
+      }
+
       const opt = {
         margin: 0.5,
         filename: 'Loan_Details_and_Schedule.pdf',
@@ -393,22 +320,31 @@
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
-      html2pdf().from(element).set(opt).save();
+
+      html2pdf().from(exportElement).set(opt).save();
     }
 
     function exportToExcel() {
+      const loanAmount = document.getElementById("loanAmount").value;
+      const periodicRepayment = document.getElementById("periodicRepayment").value;
+      const term = document.getElementById("term").value;
+      const interestRate = document.getElementById("interestRate").value;
+
       const tempTable = document.createElement("table");
       tempTable.innerHTML = `
         <tr><th colspan="2">Loan Summary</th></tr>
-        <tr><td>ទំហំឥណទាន</td><td>${document.getElementById("box-loanAmount").textContent.split(':')[1]}</td></tr>
-        <tr><td>ប្រាក់សងខួប</td><td>${document.getElementById("box-periodicRepayment").textContent.split(':')[1]}</td></tr>
-        <tr><td>រយៈពេលខ្ចី (ខែ)</td><td>${document.getElementById("box-term").textContent.split(':')[1]}</td></tr>
-        <tr><td>ការប្រាក់សរុប</td><td>${document.getElementById("box-totalInterest").textContent.split(':')[1]}</td></tr>
+        <tr><td>Loan Amount</td><td>${loanAmount}</td></tr>
+        <tr><td>Periodic Repayment</td><td>${periodicRepayment}</td></tr>
+        <tr><td>Term (Months)</td><td>${term}</td></tr>
+        <tr><td>Annual Interest Rate (%)</td><td>${interestRate}</td></tr>
         <tr><td colspan="2"></td></tr>
       `;
+
       const scheduleTable = document.querySelector("#scheduleTableWrapper table");
-      const scheduleClone = scheduleTable.cloneNode(true);
-      tempTable.appendChild(document.createElement("tbody")).append(...scheduleClone.rows);
+      if (scheduleTable) {
+        const scheduleClone = scheduleTable.cloneNode(true);
+        tempTable.appendChild(document.createElement("tbody")).append(...scheduleClone.rows);
+      }
 
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.table_to_sheet(tempTable);
