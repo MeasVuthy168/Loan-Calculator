@@ -117,15 +117,14 @@
       font-size: 18px;
     }
 
-    .result-group {
-      display: flex;
-      justify-content: space-between;
-      margin: 8px 0;
+    .result-box {
+      background-color: #223146;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 10px;
       font-size: 15px;
-    }
-
-    .result-group label {
-      font-weight: bold;
+      line-height: 1.5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     table {
@@ -168,11 +167,6 @@
       .form-group select {
         width: 100%;
         font-size: 15px;
-      }
-
-      .result-group {
-        flex-direction: column;
-        align-items: flex-start;
       }
     }
   </style>
@@ -225,22 +219,10 @@
     <button onclick="calculateLoan()">គណនា</button>
 
     <h3>លទ្ធផល:</h3>
-    <div class="result-group">
-      <label>ទំហំឥណទាន:</label>
-      <span id="result-loanAmount">-</span>
-    </div>
-    <div class="result-group">
-      <label>ប្រាក់សងខួប:</label>
-      <span id="result-periodicRepayment">-</span>
-    </div>
-    <div class="result-group">
-      <label>រយៈពេលខ្ចី (ខែ):</label>
-      <span id="result-term">-</span>
-    </div>
-    <div class="result-group">
-      <label>ការប្រាក់សរុប:</label>
-      <span id="result-totalInterest">-</span>
-    </div>
+    <div class="result-box" id="box-loanAmount">ទំហំឥណទាន: -</div>
+    <div class="result-box" id="box-periodicRepayment">ប្រាក់សងខួប: -</div>
+    <div class="result-box" id="box-term">រយៈពេលខ្ចី (ខែ): -</div>
+    <div class="result-box" id="box-totalInterest">ការប្រាក់សរុប: -</div>
 
     <div id="scheduleTableWrapper"></div>
   </div>
@@ -279,10 +261,10 @@
       let totalPayment = periodicRepayment * term;
       let totalInterest = totalPayment - loanAmount;
 
-      document.getElementById("result-loanAmount").textContent = loanAmount.toFixed(2);
-      document.getElementById("result-periodicRepayment").textContent = periodicRepayment.toFixed(2);
-      document.getElementById("result-term").textContent = term;
-      document.getElementById("result-totalInterest").textContent = totalInterest.toFixed(2);
+      document.getElementById("box-loanAmount").textContent = `ទំហំឥណទាន: ${loanAmount.toFixed(2)}`;
+      document.getElementById("box-periodicRepayment").textContent = `ប្រាក់សងខួប: ${periodicRepayment.toFixed(2)}`;
+      document.getElementById("box-term").textContent = `រយៈពេលខ្ចី (ខែ): ${term}`;
+      document.getElementById("box-totalInterest").textContent = `ការប្រាក់សរុប: ${totalInterest.toFixed(2)}`;
 
       let balance = loanAmount;
       let scheduleHTML = `<h3>តារាងបង់ប្រាក់</h3><table><thead><tr>
