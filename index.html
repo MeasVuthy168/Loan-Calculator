@@ -202,9 +202,9 @@
           <tr><th>ការប្រាក់សរុប</th><td>${(pay * months - loan).toFixed(2)}</td></tr>
         </table>
         <br><h3>តារាងបង់ប្រាក់</h3>
-        <table>
+        <table id="scheduleTable">
           <thead><tr>
-            <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><thប្រាក់នៅសល់</th>
+            <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
           </tr></thead><tbody>
       `;
 
@@ -257,23 +257,28 @@
         filename: 'តារាងសងឥណទាន.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', putOnlyUsedFonts: true }
       };
 
       html2pdf().from(element).set(opt).save();
     }
 
     function exportToExcel() {
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
+      const exportSection = document.getElementById("exportSection");
+      if (!exportSection || exportSection.innerHTML.trim() === "") {
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
-      const tempTable = element.cloneNode(true);
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.table_to_sheet(tempTable.querySelector("table"));
-      XLSX.utils.book_append_sheet(wb, ws, "តារាងបង់ប្រាក់");
+      const tables = exportSection.querySelectorAll("table");
+
+      tables.forEach((table, index) => {
+        const ws = XLSX.utils.table_to_sheet(table);
+        const sheetName = index === 0 ? "សង្ខេប" : "តារាងបង់ប្រាក់";
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+      });
+
       XLSX.writeFile(wb, "តារាងសងឥណទាន.xlsx");
     }
   </script>
