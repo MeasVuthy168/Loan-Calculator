@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>កម្មវិធី​គណនា​ឥណទាន</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
@@ -81,9 +80,8 @@
     .export-buttons button {
       background: none;
       border: none;
-      font-size: 30px;
+      padding: 8px;
       cursor: pointer;
-      padding: 10px;
       transition: transform 0.2s ease;
     }
 
@@ -165,10 +163,10 @@
 
     <div class="export-buttons">
       <button onclick="exportToPDF()" title="Export to PDF">
-        <i class="fas fa-file-pdf" style="color: #ff4136;"></i>
+        <img src="https://img.icons8.com/color/48/000000/export-pdf.png" alt="PDF" width="32" height="32" />
       </button>
       <button onclick="exportToExcel()" title="Export to Excel">
-        <i class="fas fa-file-excel" style="color: #28a745;"></i>
+        <img src="https://img.icons8.com/color/48/000000/ms-excel.png" alt="Excel" width="32" height="32" />
       </button>
     </div>
 
@@ -270,7 +268,6 @@
       html2pdf().set({
         margin: 0.5,
         filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
-        pagebreak: { mode: ['avoid-all'] },
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, scrollY: 0, useCORS: true },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
