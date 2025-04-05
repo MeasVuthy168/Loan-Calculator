@@ -9,7 +9,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* Load Krasar font */
     @font-face {
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
@@ -30,7 +29,7 @@
       color: white;
       margin: 0;
       padding: 20px;
-      padding-top: 60px; /* Prevent content from hiding under the back button */
+      padding-top: 60px;
     }
 
     .back-button {
@@ -115,7 +114,7 @@
       margin-top: 20px;
       background: #1e2e3e;
       border-radius: 10px;
-      font-size: 13px; /* Explicit font size for clarity */
+      font-size: 13px;
       overflow: hidden;
       margin-left: auto;
       margin-right: auto;
@@ -125,16 +124,15 @@
 
     th, td {
       border: 1px solid #444;
-      padding: 8px; /* Slightly more spacing */
+      padding: 8px;
       text-align: center;
-      font-size: 13px; /* Explicit font size for clarity */
+      font-size: 13px;
       font-weight: normal;
     }
 
     th {
       background-color: #2a8bf2;
       color: white;
-      font-weight: normal;
     }
 
     .total-row {
@@ -154,6 +152,11 @@
         flex: 1 1 100%;
       }
     }
+
+    /* PDF-specific font size */
+    .pdf-export-style {
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -172,8 +175,6 @@
       <label>ប្រភេទសង:</label>
       <select id="repaymentPeriod">
         <option value="Monthly">រៀងរាល់ខែ</option>
-        <!--<option value="Quarterly">រៀងរាល់ត្រីមាស</option>
-        <option value="Annually">រៀងរាល់ឆ្នាំ</option>-->
       </select>
     </div>
     <div class="form-group">
@@ -221,7 +222,7 @@
       const interestRate = parseFloat(document.getElementById("interestRate").value);
       const repaymentPeriod = document.getElementById("repaymentPeriod").value;
       const method = document.getElementById("paymentMethod").value;
-      const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1);
+      const rate = (interestRate / 100) / 12;
 
       let loanVal = loan, payVal = repayment, months = term;
       const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
@@ -290,13 +291,17 @@
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
+      element.classList.add("pdf-export-style");
+
       html2pdf().set({
         margin: 0.5,
         filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, scrollY: 0, useCORS: true },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).from(element).save();
+      }).from(element).save().then(() => {
+        element.classList.remove("pdf-export-style");
+      });
     }
 
     function exportToExcel() {
