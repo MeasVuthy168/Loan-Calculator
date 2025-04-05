@@ -247,7 +247,7 @@
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
       let html = `<div class="pdf-wrapper">
         <div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">
-          តារាងកាលសងប្រាក់
+          តារាងកាលវិភាគសងប្រាក់
         </div>`;
 
       html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
@@ -323,8 +323,8 @@
       });
 
       const ws = XLSX.utils.aoa_to_sheet(allData);
-      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលសងប្រាក់");
-      XLSX.writeFile(wb, "តារាងកាលសងប្រាក់.xlsx");
+      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
+      XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
     }
   </script>
 </body>
