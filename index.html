@@ -4,6 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>កម្មវិធី​គណនា​ឥណទាន</title>
+
+  <script>
+    // Check login session
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+    }
+
+    // Auto logout after 1 minute of inactivity
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+  </script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,7 +61,7 @@
 
     .container {
       max-width: 400px;
-      margin: 90px auto 30px; /* Ensures space below Back button */
+      margin: 90px auto 30px;
       padding: 20px;
       background: #1c2738;
       border-radius: 10px;
@@ -207,26 +234,14 @@
       let totalInterest = 0;
 
       if (isNaN(loanAmount)) {
-        if (isNaN(periodicRepayment) || isNaN(term)) {
-          alert("ដើម្បីគណនាទំហំឥណទាន៖ បញ្ចូលប្រាក់សងខួប និងរយៈពេលខ្ចី");
-          return;
-        }
         loanAmount = paymentMethod === "Annuity"
           ? periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate
           : periodicRepayment / ((1 / term) + monthlyRate);
       } else if (isNaN(periodicRepayment)) {
-        if (isNaN(loanAmount) || isNaN(term)) {
-          alert("ដើម្បីគណនាប្រាក់សងខួប៖ បញ្ចូលទំហំឥណទាន និងរយៈពេលខ្ចី");
-          return;
-        }
         periodicRepayment = paymentMethod === "Annuity"
           ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term))
           : (loanAmount / term) + (loanAmount * monthlyRate);
       } else if (isNaN(term)) {
-        if (isNaN(loanAmount) || isNaN(periodicRepayment)) {
-          alert("ដើម្បីគណនារយៈពេលខ្ចី៖ បញ្ចូលទំហំឥណទាន និងប្រាក់សងខួប");
-          return;
-        }
         term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
         term = Math.ceil(term);
       }
