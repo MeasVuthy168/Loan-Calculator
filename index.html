@@ -9,6 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
+    /* Load Krasar font */
     @font-face {
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
@@ -29,8 +30,7 @@
       color: white;
       margin: 0;
       padding: 20px;
-      padding-top: 60px;
-      font-size: 13px;
+      padding-top: 60px; /* Prevent content from hiding under the back button */
     }
 
     .back-button {
@@ -41,7 +41,7 @@
       color: white;
       border: none;
       padding: 10px 14px;
-      font-size: 13px;
+      font-size: 14px;
       border-radius: 5px;
       cursor: pointer;
       z-index: 1000;
@@ -53,7 +53,6 @@
       background: #1c2738;
       padding: 20px;
       border-radius: 10px;
-      font-size: 13px;
     }
 
     .form-group {
@@ -76,7 +75,6 @@
       background: #223146;
       color: white;
       font-family: 'Krasar', Arial, sans-serif;
-      font-size: 13px;
     }
 
     button {
@@ -86,7 +84,7 @@
       background-color: #2a8bf2;
       border: none;
       color: white;
-      font-size: 13px;
+      font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
       font-family: 'Krasar', Arial, sans-serif;
@@ -117,25 +115,20 @@
       margin-top: 20px;
       background: #1e2e3e;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 13px; /* Explicit font size for clarity */
       overflow: hidden;
       margin-left: auto;
       margin-right: auto;
       font-family: 'Krasar', Arial, sans-serif;
       font-weight: normal;
-      table-layout: fixed;
-      word-wrap: break-word;
     }
 
     th, td {
       border: 1px solid #444;
-      padding: 8px;
+      padding: 8px; /* Slightly more spacing */
       text-align: center;
-      font-size: 13px;
+      font-size: 10px; /* Explicit font size for clarity */
       font-weight: normal;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     th {
@@ -148,11 +141,6 @@
       font-weight: bold;
       background: #0b5ed7;
       color: white;
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 20px;
     }
 
     @media (max-width: 600px) {
@@ -174,7 +162,7 @@
   </button>
 
   <div class="container">
-    <h2>កម្មវិធី​គណនា​ឥណទាន</h2>
+    <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
 
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
@@ -184,6 +172,8 @@
       <label>ប្រភេទសង:</label>
       <select id="repaymentPeriod">
         <option value="Monthly">រៀងរាល់ខែ</option>
+        <!--<option value="Quarterly">រៀងរាល់ត្រីមាស</option>
+        <option value="Annually">រៀងរាល់ឆ្នាំ</option>-->
       </select>
     </div>
     <div class="form-group">
@@ -231,7 +221,7 @@
       const interestRate = parseFloat(document.getElementById("interestRate").value);
       const repaymentPeriod = document.getElementById("repaymentPeriod").value;
       const method = document.getElementById("paymentMethod").value;
-      const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : 1);
+      const rate = (interestRate / 100) / (repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1);
 
       let loanVal = loan, payVal = repayment, months = term;
       const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
