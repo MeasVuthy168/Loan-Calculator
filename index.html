@@ -2,77 +2,81 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>កម្មវិធី​គណនា​ឥណទាន</title>
-
-  <!-- External Libraries -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Khmer OS System', Arial, sans-serif;
       background-color: #121b29;
       color: white;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
 
     .container {
-      max-width: 500px;
-      margin: 90px auto 30px;
-      padding: 20px;
+      max-width: 600px;
+      margin: auto;
       background: #1c2738;
+      padding: 20px;
       border-radius: 10px;
+    }
+
+    h2 {
+      text-align: center;
     }
 
     .form-group {
       display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
+      justify-content: space-between;
+      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
     .form-group label {
-      flex: 1 1 40%;
-      font-weight: bold;
+      flex: 0 0 45%;
+      margin-bottom: 5px;
     }
 
     .form-group input,
     .form-group select {
-      flex: 1 1 55%;
-      padding: 10px;
+      flex: 0 0 50%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #444;
       background: #223146;
       color: white;
-      border: 1px solid #3a4f6a;
-      border-radius: 5px;
     }
 
     button {
-      padding: 12px;
-      margin-top: 16px;
       width: 100%;
-      background: #2a8bf2;
-      color: white;
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #2a8bf2;
       border: none;
+      color: white;
+      font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 15px;
     }
 
-    .result-box {
-      background-color: #223146;
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin: 8px 0;
+    button:hover {
+      background-color: #1f6ed5;
+    }
+
+    .export-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
-      background-color: #1e2e3e;
-      font-size: 14px;
+      margin-top: 20px;
+      background: #1e2e3e;
     }
 
     th, td {
@@ -86,22 +90,13 @@
       color: white;
     }
 
-    .export-buttons {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .export-buttons button {
-      margin: 6px;
-      padding: 10px 16px;
-      border: none;
-      background-color: #2a8bf2;
-      border-radius: 5px;
+    .total-row {
+      font-weight: bold;
+      background: #0b5ed7;
       color: white;
-      cursor: pointer;
     }
 
-    @media screen and (max-width: 600px) {
+    @media (max-width: 600px) {
       .form-group {
         flex-direction: column;
       }
@@ -109,18 +104,14 @@
       .form-group label,
       .form-group input,
       .form-group select {
-        width: 100%;
-      }
-
-      .container {
-        width: 90%;
+        flex: 1 1 100%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
+    <h2>កម្មវិធី​គណនា​ឥណទាន</h2>
 
     <div class="form-group">
       <label for="loanAmount">ទំហំឥណទាន:</label>
@@ -131,20 +122,20 @@
       <input type="number" id="periodicRepayment" />
     </div>
     <div class="form-group">
-      <label for="repaymentPeriod">ប្រភេទសង:</label>
-      <select id="repaymentPeriod">
-        <option value="Monthly">រៀងរាល់ខែ</option>
-        <option value="Quarterly">រៀងរាល់ត្រីមាស</option>
-        <option value="Annually">រៀងរាល់ឆ្នាំ</option>
-      </select>
-    </div>
-    <div class="form-group">
       <label for="term">រយៈពេលខ្ចី (ខែ):</label>
       <input type="number" id="term" />
     </div>
     <div class="form-group">
       <label for="interestRate">អត្រាការប្រាក់ប្រចាំឆ្នាំ (%):</label>
       <input type="number" id="interestRate" />
+    </div>
+    <div class="form-group">
+      <label for="repaymentPeriod">ប្រភេទសង:</label>
+      <select id="repaymentPeriod">
+        <option value="Monthly">រៀងរាល់ខែ</option>
+        <option value="Quarterly">រៀងរាល់ត្រីមាស</option>
+        <option value="Annually">រៀងរាល់ឆ្នាំ</option>
+      </select>
     </div>
     <div class="form-group">
       <label for="paymentMethod">របៀបបង់ប្រាក់:</label>
@@ -156,12 +147,12 @@
 
     <button onclick="calculateLoan()">គណនា</button>
 
-    <div id="scheduleTableWrapper"></div>
-
     <div class="export-buttons">
-      <button onclick="exportToPDF()">Export to PDF</button>
-      <button onclick="exportToExcel()">Export to Excel</button>
+      <button onclick="exportToPDF()">នាំចេញ PDF</button>
+      <button onclick="exportToExcel()">នាំចេញ Excel</button>
     </div>
+
+    <div id="exportSection"></div>
   </div>
 
   <script>
@@ -174,55 +165,57 @@
       const paymentMethod = document.getElementById("paymentMethod").value;
 
       const periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
-      const monthlyRate = (interestRate / 100) / periodsPerYear;
+      const rate = (interestRate / 100) / periodsPerYear;
 
-      const missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
-      if (missingFields !== 1) {
-        alert("សូមទុកប្រអប់ណាមួយ ដែលលោកអ្នកចង់គណនាឱ្យ នៅ ទទេ");
+      let loan = loanAmount;
+      let pay = periodicRepayment;
+      let months = term;
+
+      const missing = [isNaN(loan), isNaN(pay), isNaN(months)].filter(Boolean).length;
+      if (missing !== 1) {
+        alert("សូមទុកប្រអប់មួយដើម្បីគណនា (ទំហំឥណទាន ឬ ប្រាក់សង ឬ រយៈពេល)។");
         return;
       }
 
-      let loan = loanAmount;
-      let payment = periodicRepayment;
-      let months = term;
-
       if (isNaN(loan)) {
         loan = paymentMethod === "Annuity"
-          ? payment * (1 - Math.pow(1 + monthlyRate, -months)) / monthlyRate
-          : payment / ((1 / months) + monthlyRate);
-      } else if (isNaN(payment)) {
-        payment = paymentMethod === "Annuity"
-          ? (loan * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
-          : (loan / months) + (loan * monthlyRate);
+          ? pay * (1 - Math.pow(1 + rate, -months)) / rate
+          : pay / ((1 / months) + rate);
+      } else if (isNaN(pay)) {
+        pay = paymentMethod === "Annuity"
+          ? (loan * rate) / (1 - Math.pow(1 + rate, -months))
+          : (loan / months) + (loan * rate);
       } else if (isNaN(months)) {
-        months = Math.log(payment / (payment - loan * monthlyRate)) / Math.log(1 + monthlyRate);
+        months = Math.log(pay / (pay - loan * rate)) / Math.log(1 + rate);
         months = Math.ceil(months);
       }
 
       let balance = loan;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-      let html = `<h3>Loan Summary</h3>
-        <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
-          <tr><th>Loan Amount</th><td>${loan.toFixed(2)}</td></tr>
-          <tr><th>Repayment</th><td>${payment.toFixed(2)}</td></tr>
-          <tr><th>Term (Months)</th><td>${months}</td></tr>
-          <tr><th>Total Interest</th><td>${(payment * months - loan).toFixed(2)}</td></tr>
+      let html = `
+        <h3>សង្ខេបឥណទាន</h3>
+        <table>
+          <tr><th>ទំហំឥណទាន</th><td>${loan.toFixed(2)}</td></tr>
+          <tr><th>ប្រាក់សងខួប</th><td>${pay.toFixed(2)}</td></tr>
+          <tr><th>រយៈពេលខ្ចី</th><td>${months} ខែ</td></tr>
+          <tr><th>ការប្រាក់សរុប</th><td>${(pay * months - loan).toFixed(2)}</td></tr>
         </table>
-        <br><h3>Repayment Schedule</h3>
-        <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <br><h3>តារាងបង់ប្រាក់</h3>
+        <table>
           <thead><tr>
-            <th>Month</th><th>Principal</th><th>Interest</th><th>Payment</th><th>Balance</th>
-          </tr></thead><tbody>`;
+            <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><thប្រាក់នៅសល់</th>
+          </tr></thead><tbody>
+      `;
 
       for (let i = 1; i <= months; i++) {
-        const interest = balance * monthlyRate;
+        const interest = balance * rate;
         const principal = paymentMethod === "Annuity"
-          ? payment - interest
+          ? pay - interest
           : loan / months;
 
-        const pay = paymentMethod === "Annuity"
-          ? payment
+        const payment = paymentMethod === "Annuity"
+          ? pay
           : principal + interest;
 
         balance -= principal;
@@ -230,18 +223,18 @@
 
         totalPrincipal += principal;
         totalInterest += interest;
-        totalPayment += pay;
+        totalPayment += payment;
 
         html += `<tr>
           <td>${i}</td>
           <td>${principal.toFixed(2)}</td>
           <td>${interest.toFixed(2)}</td>
-          <td>${pay.toFixed(2)}</td>
+          <td>${payment.toFixed(2)}</td>
           <td>${balance.toFixed(2)}</td>
         </tr>`;
       }
 
-      html += `<tr style="font-weight:bold; background:#0b5ed7; color:white;">
+      html += `<tr class="total-row">
         <td>សរុប</td>
         <td>${totalPrincipal.toFixed(2)}</td>
         <td>${totalInterest.toFixed(2)}</td>
@@ -249,81 +242,39 @@
         <td>-</td>
       </tr></tbody></table>`;
 
-      document.getElementById("scheduleTableWrapper").innerHTML = html;
+      document.getElementById("exportSection").innerHTML = html;
     }
 
     function exportToPDF() {
-      const loanAmount = document.getElementById("loanAmount").value || "-";
-      const periodicRepayment = document.getElementById("periodicRepayment").value || "-";
-      const term = document.getElementById("term").value || "-";
-      const interestRate = document.getElementById("interestRate").value || "-";
-      const schedule = document.getElementById("scheduleTableWrapper").innerHTML;
-
-      if (!schedule.trim()) {
-        alert("Please calculate the loan before exporting.");
+      const element = document.getElementById("exportSection");
+      if (!element || element.innerHTML.trim() === "") {
+        alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
-      const fullHTML = `
-        <div style="font-family: Arial; padding: 20px;">
-          <h2 style="text-align: center;">Loan Details and Schedule</h2>
-          <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
-            <tr><th>Loan Amount</th><td>${loanAmount}</td></tr>
-            <tr><th>Periodic Repayment</th><td>${periodicRepayment}</td></tr>
-            <tr><th>Term (Months)</th><td>${term}</td></tr>
-            <tr><th>Annual Interest Rate</th><td>${interestRate}</td></tr>
-          </table>
-          <br>${schedule}
-          <p style="text-align:center; margin-top:40px;">© 2025 ACLEDA Svay Rieng Branch</p>
-        </div>
-      `;
-
-      const element = document.createElement("div");
-      element.innerHTML = fullHTML;
-      document.body.appendChild(element);
-
       const opt = {
         margin: 0.5,
-        filename: 'Loan_Details_and_Schedule.pdf',
+        filename: 'តារាងសងឥណទាន.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().from(element).set(opt).save().then(() => {
-        document.body.removeChild(element);
-      });
+      html2pdf().from(element).set(opt).save();
     }
 
     function exportToExcel() {
-      const loanAmount = document.getElementById("loanAmount").value || "-";
-      const periodicRepayment = document.getElementById("periodicRepayment").value || "-";
-      const term = document.getElementById("term").value || "-";
-      const interestRate = document.getElementById("interestRate").value || "-";
-
-      const scheduleTable = document.querySelector("#scheduleTableWrapper table");
-      if (!scheduleTable) {
-        alert("Please calculate the loan before exporting.");
+      const element = document.getElementById("exportSection");
+      if (!element || element.innerHTML.trim() === "") {
+        alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
 
-      const tempTable = document.createElement("table");
-      tempTable.innerHTML = `
-        <tr><th colspan="2">Loan Summary</th></tr>
-        <tr><td>Loan Amount</td><td>${loanAmount}</td></tr>
-        <tr><td>Repayment</td><td>${periodicRepayment}</td></tr>
-        <tr><td>Term (Months)</td><td>${term}</td></tr>
-        <tr><td>Annual Interest Rate</td><td>${interestRate}</td></tr>
-        <tr><td colspan="2"></td></tr>
-      `;
-
-      const clone = scheduleTable.cloneNode(true);
-      tempTable.appendChild(document.createElement("tbody")).append(...clone.rows);
-
+      const tempTable = element.cloneNode(true);
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.table_to_sheet(tempTable);
-      XLSX.utils.book_append_sheet(wb, ws, "Loan Details");
-      XLSX.writeFile(wb, "Loan_Details_and_Schedule.xlsx");
+      const ws = XLSX.utils.table_to_sheet(tempTable.querySelector("table"));
+      XLSX.utils.book_append_sheet(wb, ws, "តារាងបង់ប្រាក់");
+      XLSX.writeFile(wb, "តារាងសងឥណទាន.xlsx");
     }
   </script>
 </body>
