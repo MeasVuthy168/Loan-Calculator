@@ -156,9 +156,15 @@
       }
 
       .container {
-        width: 90%;
+        width: 95%;
         margin-top: 100px;
         padding: 15px;
+      }
+
+      table {
+        font-size: 13px;
+        width: 95%;
+        margin: 0 auto;
       }
     }
   </style>
@@ -271,10 +277,10 @@
       document.getElementById("result-term").textContent = term;
       document.getElementById("result-totalInterest").textContent = totalInterest.toFixed(2);
 
-      // Schedule build
+      // Schedule table
       let balance = loanAmount;
       let scheduleHTML = `<h3>តារាងបង់ប្រាក់</h3><table><thead><tr>
-        <th>ខែ</th><th>Principal</th><th>Interest</th><th>Payment</th><th>Balance</th>
+        <th>ខែ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
       </tr></thead><tbody>`;
 
       for (let i = 1; i <= term; i++) {
