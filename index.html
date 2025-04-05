@@ -9,29 +9,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -41,79 +18,61 @@
       padding: 0;
     }
 
-    .back-button {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      padding: 8px 14px;
-      background-color: #2a8bf2;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 1000;
-    }
-
     .container {
       max-width: 500px;
       margin: 90px auto 30px;
       padding: 20px;
       background: #1c2738;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     }
 
     .form-group {
       display: flex;
-      align-items: center;
       gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
 
     .form-group label {
-      flex: 0 0 40%;
+      flex: 1 1 40%;
       font-weight: bold;
     }
 
     .form-group input,
     .form-group select {
-      flex: 1;
+      flex: 1 1 55%;
       padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #3a4f6a;
       background: #223146;
       color: white;
+      border: 1px solid #3a4f6a;
+      border-radius: 5px;
     }
 
     button {
-      width: 100%;
       padding: 12px;
-      margin-top: 20px;
-      font-size: 16px;
-      background-color: #2a8bf2;
+      margin-top: 16px;
+      width: 100%;
+      background: #2a8bf2;
+      color: white;
       border: none;
       border-radius: 5px;
-      color: white;
       cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #1f6ed5;
+      font-size: 15px;
     }
 
     .result-box {
       background-color: #223146;
-      margin: 10px 0;
       padding: 10px 14px;
       border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      margin: 8px 0;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 15px;
       background-color: #1e2e3e;
+      font-size: 14px;
     }
 
     th, td {
@@ -127,33 +86,24 @@
       color: white;
     }
 
-    #exportButtons {
+    .export-buttons {
       text-align: center;
       margin-top: 20px;
     }
 
-    #exportButtons button {
+    .export-buttons button {
       margin: 6px;
       padding: 10px 16px;
       border: none;
-      border-radius: 5px;
       background-color: #2a8bf2;
+      border-radius: 5px;
       color: white;
       cursor: pointer;
     }
 
-    #exportButtons button:hover {
-      background-color: #1f6ed5;
-    }
-
     @media screen and (max-width: 600px) {
-      .container {
-        width: 90%;
-      }
-
       .form-group {
         flex-direction: column;
-        align-items: flex-start;
       }
 
       .form-group label,
@@ -161,24 +111,24 @@
       .form-group select {
         width: 100%;
       }
+
+      .container {
+        width: 90%;
+      }
     }
   </style>
 </head>
 <body>
-  <button class="back-button" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
-    ⬅ ត្រឡប់ទៅទំព័រដើម
-  </button>
-
   <div class="container">
     <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
 
     <div class="form-group">
       <label for="loanAmount">ទំហំឥណទាន:</label>
-      <input type="number" id="loanAmount">
+      <input type="number" id="loanAmount" />
     </div>
     <div class="form-group">
       <label for="periodicRepayment">ប្រាក់សងខួប:</label>
-      <input type="number" id="periodicRepayment">
+      <input type="number" id="periodicRepayment" />
     </div>
     <div class="form-group">
       <label for="repaymentPeriod">ប្រភេទសង:</label>
@@ -190,11 +140,11 @@
     </div>
     <div class="form-group">
       <label for="term">រយៈពេលខ្ចី (ខែ):</label>
-      <input type="number" id="term">
+      <input type="number" id="term" />
     </div>
     <div class="form-group">
       <label for="interestRate">អត្រាការប្រាក់ប្រចាំឆ្នាំ (%):</label>
-      <input type="number" id="interestRate">
+      <input type="number" id="interestRate" />
     </div>
     <div class="form-group">
       <label for="paymentMethod">របៀបបង់ប្រាក់:</label>
@@ -206,17 +156,9 @@
 
     <button onclick="calculateLoan()">គណនា</button>
 
-    <div id="exportContent">
-      <h3>លទ្ធផល:</h3>
-      <div class="result-box" id="box-loanAmount">ទំហំឥណទាន: -</div>
-      <div class="result-box" id="box-periodicRepayment">ប្រាក់សងខួប: -</div>
-      <div class="result-box" id="box-term">រយៈពេលខ្ចី (ខែ): -</div>
-      <div class="result-box" id="box-totalInterest">ការប្រាក់សរុប: -</div>
+    <div id="scheduleTableWrapper"></div>
 
-      <div id="scheduleTableWrapper"></div>
-    </div>
-
-    <div id="exportButtons">
+    <div class="export-buttons">
       <button onclick="exportToPDF()">Export to PDF</button>
       <button onclick="exportToExcel()">Export to Excel</button>
     </div>
@@ -224,94 +166,121 @@
 
   <script>
     function calculateLoan() {
-      let loanAmount = parseFloat(document.getElementById("loanAmount").value);
-      let periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
-      let term = parseFloat(document.getElementById("term").value);
-      let interestRate = parseFloat(document.getElementById("interestRate").value);
-      let repaymentPeriod = document.getElementById("repaymentPeriod").value;
-      let paymentMethod = document.getElementById("paymentMethod").value;
+      const loanAmount = parseFloat(document.getElementById("loanAmount").value);
+      const periodicRepayment = parseFloat(document.getElementById("periodicRepayment").value);
+      const term = parseFloat(document.getElementById("term").value);
+      const interestRate = parseFloat(document.getElementById("interestRate").value);
+      const repaymentPeriod = document.getElementById("repaymentPeriod").value;
+      const paymentMethod = document.getElementById("paymentMethod").value;
 
-      let periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
-      let monthlyRate = (interestRate / 100) / periodsPerYear;
+      const periodsPerYear = repaymentPeriod === "Monthly" ? 12 : repaymentPeriod === "Quarterly" ? 4 : 1;
+      const monthlyRate = (interestRate / 100) / periodsPerYear;
 
-      let missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
+      const missingFields = [isNaN(loanAmount), isNaN(periodicRepayment), isNaN(term)].filter(Boolean).length;
       if (missingFields !== 1) {
         alert("សូមទុកប្រអប់ណាមួយ ដែលលោកអ្នកចង់គណនាឱ្យ នៅ ទទេ");
         return;
       }
 
-      if (isNaN(loanAmount)) {
-        loanAmount = paymentMethod === "Annuity"
-          ? periodicRepayment * (1 - Math.pow(1 + monthlyRate, -term)) / monthlyRate
-          : periodicRepayment / ((1 / term) + monthlyRate);
-      } else if (isNaN(periodicRepayment)) {
-        periodicRepayment = paymentMethod === "Annuity"
-          ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term))
-          : (loanAmount / term) + (loanAmount * monthlyRate);
-      } else if (isNaN(term)) {
-        term = Math.log(periodicRepayment / (periodicRepayment - loanAmount * monthlyRate)) / Math.log(1 + monthlyRate);
-        term = Math.ceil(term);
+      let loan = loanAmount;
+      let payment = periodicRepayment;
+      let months = term;
+
+      if (isNaN(loan)) {
+        loan = paymentMethod === "Annuity"
+          ? payment * (1 - Math.pow(1 + monthlyRate, -months)) / monthlyRate
+          : payment / ((1 / months) + monthlyRate);
+      } else if (isNaN(payment)) {
+        payment = paymentMethod === "Annuity"
+          ? (loan * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+          : (loan / months) + (loan * monthlyRate);
+      } else if (isNaN(months)) {
+        months = Math.log(payment / (payment - loan * monthlyRate)) / Math.log(1 + monthlyRate);
+        months = Math.ceil(months);
       }
 
-      let totalPayment = periodicRepayment * term;
-      let totalInterest = totalPayment - loanAmount;
+      let balance = loan;
+      let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-      document.getElementById("box-loanAmount").textContent = `ទំហំឥណទាន: ${loanAmount.toFixed(2)}`;
-      document.getElementById("box-periodicRepayment").textContent = `ប្រាក់សងខួប: ${periodicRepayment.toFixed(2)}`;
-      document.getElementById("box-term").textContent = `រយៈពេលខ្ចី (ខែ): ${term}`;
-      document.getElementById("box-totalInterest").textContent = `ការប្រាក់សរុប: ${totalInterest.toFixed(2)}`;
+      let html = `<h3>Loan Summary</h3>
+        <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
+          <tr><th>Loan Amount</th><td>${loan.toFixed(2)}</td></tr>
+          <tr><th>Repayment</th><td>${payment.toFixed(2)}</td></tr>
+          <tr><th>Term (Months)</th><td>${months}</td></tr>
+          <tr><th>Total Interest</th><td>${(payment * months - loan).toFixed(2)}</td></tr>
+        </table>
+        <br><h3>Repayment Schedule</h3>
+        <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+          <thead><tr>
+            <th>Month</th><th>Principal</th><th>Interest</th><th>Payment</th><th>Balance</th>
+          </tr></thead><tbody>`;
 
-      let balance = loanAmount;
-      let totalPrincipal = 0, totalInterestSum = 0, totalPaymentSum = 0;
+      for (let i = 1; i <= months; i++) {
+        const interest = balance * monthlyRate;
+        const principal = paymentMethod === "Annuity"
+          ? payment - interest
+          : loan / months;
 
-      let scheduleHTML = `<h3>តារាងបង់ប្រាក់</h3><table><thead><tr>
-        <th>ខែ</th><th>Principal</th><th>Interest</th><th>Payment</th><th>Balance</th>
-      </tr></thead><tbody>`;
-
-      for (let i = 1; i <= term; i++) {
-        let interest = balance * monthlyRate;
-        let principal;
-
-        if (paymentMethod === "Annuity") {
-          principal = periodicRepayment - interest;
-        } else {
-          principal = loanAmount / term;
-          periodicRepayment = principal + interest;
-        }
+        const pay = paymentMethod === "Annuity"
+          ? payment
+          : principal + interest;
 
         balance -= principal;
         if (balance < 0) balance = 0;
 
         totalPrincipal += principal;
-        totalInterestSum += interest;
-        totalPaymentSum += periodicRepayment;
+        totalInterest += interest;
+        totalPayment += pay;
 
-        scheduleHTML += `<tr>
+        html += `<tr>
           <td>${i}</td>
           <td>${principal.toFixed(2)}</td>
           <td>${interest.toFixed(2)}</td>
-          <td>${periodicRepayment.toFixed(2)}</td>
+          <td>${pay.toFixed(2)}</td>
           <td>${balance.toFixed(2)}</td>
         </tr>`;
       }
 
-      scheduleHTML += `<tr style="background-color:#0b5ed7;color:#fff;font-weight:bold;">
+      html += `<tr style="font-weight:bold; background:#0b5ed7; color:white;">
         <td>សរុប</td>
         <td>${totalPrincipal.toFixed(2)}</td>
-        <td>${totalInterestSum.toFixed(2)}</td>
-        <td>${totalPaymentSum.toFixed(2)}</td>
+        <td>${totalInterest.toFixed(2)}</td>
+        <td>${totalPayment.toFixed(2)}</td>
         <td>-</td>
       </tr></tbody></table>`;
 
-      document.getElementById("scheduleTableWrapper").innerHTML = scheduleHTML;
+      document.getElementById("scheduleTableWrapper").innerHTML = html;
     }
 
     function exportToPDF() {
-      const exportElement = document.getElementById("exportContent");
-      if (!exportElement || exportElement.innerText.trim() === '') {
+      const loanAmount = document.getElementById("loanAmount").value || "-";
+      const periodicRepayment = document.getElementById("periodicRepayment").value || "-";
+      const term = document.getElementById("term").value || "-";
+      const interestRate = document.getElementById("interestRate").value || "-";
+      const schedule = document.getElementById("scheduleTableWrapper").innerHTML;
+
+      if (!schedule.trim()) {
         alert("Please calculate the loan before exporting.");
         return;
       }
+
+      const fullHTML = `
+        <div style="font-family: Arial; padding: 20px;">
+          <h2 style="text-align: center;">Loan Details and Schedule</h2>
+          <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
+            <tr><th>Loan Amount</th><td>${loanAmount}</td></tr>
+            <tr><th>Periodic Repayment</th><td>${periodicRepayment}</td></tr>
+            <tr><th>Term (Months)</th><td>${term}</td></tr>
+            <tr><th>Annual Interest Rate</th><td>${interestRate}</td></tr>
+          </table>
+          <br>${schedule}
+          <p style="text-align:center; margin-top:40px;">© 2025 ACLEDA Svay Rieng Branch</p>
+        </div>
+      `;
+
+      const element = document.createElement("div");
+      element.innerHTML = fullHTML;
+      document.body.appendChild(element);
 
       const opt = {
         margin: 0.5,
@@ -321,30 +290,35 @@
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().from(exportElement).set(opt).save();
+      html2pdf().from(element).set(opt).save().then(() => {
+        document.body.removeChild(element);
+      });
     }
 
     function exportToExcel() {
-      const loanAmount = document.getElementById("loanAmount").value;
-      const periodicRepayment = document.getElementById("periodicRepayment").value;
-      const term = document.getElementById("term").value;
-      const interestRate = document.getElementById("interestRate").value;
+      const loanAmount = document.getElementById("loanAmount").value || "-";
+      const periodicRepayment = document.getElementById("periodicRepayment").value || "-";
+      const term = document.getElementById("term").value || "-";
+      const interestRate = document.getElementById("interestRate").value || "-";
+
+      const scheduleTable = document.querySelector("#scheduleTableWrapper table");
+      if (!scheduleTable) {
+        alert("Please calculate the loan before exporting.");
+        return;
+      }
 
       const tempTable = document.createElement("table");
       tempTable.innerHTML = `
         <tr><th colspan="2">Loan Summary</th></tr>
         <tr><td>Loan Amount</td><td>${loanAmount}</td></tr>
-        <tr><td>Periodic Repayment</td><td>${periodicRepayment}</td></tr>
+        <tr><td>Repayment</td><td>${periodicRepayment}</td></tr>
         <tr><td>Term (Months)</td><td>${term}</td></tr>
-        <tr><td>Annual Interest Rate (%)</td><td>${interestRate}</td></tr>
+        <tr><td>Annual Interest Rate</td><td>${interestRate}</td></tr>
         <tr><td colspan="2"></td></tr>
       `;
 
-      const scheduleTable = document.querySelector("#scheduleTableWrapper table");
-      if (scheduleTable) {
-        const scheduleClone = scheduleTable.cloneNode(true);
-        tempTable.appendChild(document.createElement("tbody")).append(...scheduleClone.rows);
-      }
+      const clone = scheduleTable.cloneNode(true);
+      tempTable.appendChild(document.createElement("tbody")).append(...clone.rows);
 
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.table_to_sheet(tempTable);
